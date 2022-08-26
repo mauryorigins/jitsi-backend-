@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { JitsiTokenService } from './jitsi-token.service';
 import { JwtPayload } from './jwt-payload.interface';
 
@@ -6,8 +6,8 @@ import { JwtPayload } from './jwt-payload.interface';
 export class JitsiTokenController {
   constructor(private jitsiTokenService: JitsiTokenService) {}
 
-  @Get('/jitsiToken')
-  generateJitisiToken(@Body() jwtPayload: JwtPayload): Promise<string> {
-    return this.jitsiTokenService.generate(jwtPayload);
+  @Post('/jitsiToken')
+  generateJitisiToken(@Body() jwtPayload: JwtPayload): { token: string } {
+    return { token: this.jitsiTokenService.generate(jwtPayload) };
   }
 }

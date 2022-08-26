@@ -1,44 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import fs = require('fs');
-
-console.log('hola', process.cwd());
-
-const privateKey = fs.readFileSync(`${process.cwd()}${process.env.KEY_DIR}`);
-
-import jsonwebtoken, { JwtHeader } from 'jsonwebtoken';
-
+import { JwtService } from '@nestjs/jwt';
+import { JITSI_SUB } from 'src/config';
 @Injectable()
 export class JitsiTokenService {
-  async generate({ id, name, room, startDateToken, endDateToken }) {
-    const jwt = jsonwebtoken.sign(
-      {
-        aud: 'jitsi',
-        context: {
-          user: {
-            id,
-            name,
-            avatar: 'null',
-            moderator: 'true',
-          },
-          features: {
-            livestreaming: 'true',
-            recording: 'true',
-            transcription: 'true',
-            'outbound-call': 'true',
-          },
+  constructor(private jwtService: JwtService) {}
+
+  generate({ id, name, room, startDateToken, endDateToken }) {
+    const jwt = this.jwtService.sign({
+      aud: 'jitsi',
+      context: {
+        user: {
+          id,
+          name,
+          avatar: 'null',
+          moderator: 'true',
         },
-        iss: 'chat',
-        room,
-        sub: process.env.JITSI_SUB,
-        exp: startDateToken,
-        nbf: endDateToken,
+        features: {
+          livestreaming: 'true',
+          recording: 'true',
+          transcription: 'true',
+          'outbound-call': 'true',
+        },
       },
-      privateKey,
-      {
-        algorithm: 'RS256',
-        header: { kid: process.env.JITSI_KID } as JwtHeader,
-      },
-    );
+      iss: 'chat',
+      room,
+      sub: JITSI_SUB,
+      exp: startDateToken,
+      nbf: endDateToken,
+    });
     return jwt;
   }
 }
