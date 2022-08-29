@@ -6,27 +6,32 @@ export class JitsiTokenService {
   constructor(private jwtService: JwtService) {}
 
   generate({ id, name, room, startDateToken, endDateToken }) {
-    const jwt = this.jwtService.sign({
+    const jwt = this.jwtService.sign(
+{
       aud: 'jitsi',
+      iss: 'chat',
+      iat: 1661545415,
+      exp: 1661552615,
+      nbf: 1661545410,
+      sub: 'vpaas-magic-cookie-751bd955a08f412894c18e82e318460f',
       context: {
-        user: {
-          id,
-          name,
-          avatar: 'null',
-          moderator: 'true',
-        },
         features: {
-          livestreaming: 'true',
-          recording: 'true',
-          transcription: 'true',
-          'outbound-call': 'true',
+          livestreaming: true,
+          'outbound-call': true,
+          'sip-outbound-call': false,
+          transcription: true,
+          recording: true,
+        },
+        user: {
+          'hidden-from-recorder': false,
+          moderator: true,
+          name: 'mauryorigins',
+          id: 'google-oauth2|110449920273957498947',
+          avatar: '',
+          email: 'mauryorigins@gmail.com',
         },
       },
-      iss: 'chat',
-      room,
-      sub: JITSI_SUB,
-      exp: startDateToken,
-      nbf: endDateToken,
+      room: '*',
     });
     return jwt;
   }
