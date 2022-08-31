@@ -7,7 +7,13 @@ export class JitsiTokenController {
   constructor(private jitsiTokenService: JitsiTokenService) {}
 
   @Post('/jitsiToken')
-  generateJitisiToken(@Body() jwtPayload: JwtPayload): { token: string } {
-    return { token: this.jitsiTokenService.generate(jwtPayload) };
+  generateJitisiToken(@Body() jwtPayload: JwtPayload): {
+    token: string;
+    tokenGuest: string;
+  } {
+    return {
+      token: this.jitsiTokenService.generate(jwtPayload),
+      tokenGuest: this.jitsiTokenService.generateGuest(jwtPayload),
+    };
   }
 }
